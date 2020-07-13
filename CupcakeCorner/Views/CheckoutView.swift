@@ -9,7 +9,9 @@ import SwiftUI
 
 struct CheckoutView: View {
   @ObservedObject var order: Order
+  @State private var confirmationTitle = ""
   @State private var confirmationMessage = ""
+  @State private var confirmationButton = ""
   @State private var showingConfirmation = false
   
   
@@ -33,7 +35,7 @@ struct CheckoutView: View {
       }
     }
     .alert(isPresented: $showingConfirmation) {
-      Alert(title: Text("Thank you!"), message: Text(confirmationMessage), dismissButton: .default(Text("OK")))
+      Alert(title: Text(confirmationTitle), message: Text(confirmationMessage), dismissButton: .default(Text(confirmationButton)))
     }
   }
   
@@ -57,10 +59,15 @@ struct CheckoutView: View {
       }
       
       if let decodedOrder = try? JSONDecoder().decode(Order.self, from: data) {
+        self.confirmationTitle = "Thank you!"
         self.confirmationMessage = "Your order for \(decodedOrder.quantity) x \(Order.types[decodedOrder.type].lowercased()) cupcakes is on its way!"
+        self.confirmationButton = "🙂"
         self.showingConfirmation = true
       } else {
-        print("Invalid response from server")
+        self.confirmationTitle = "Uh oh!"
+        self.confirmationMessage = "We tried to process your order\nbut it didn't work.\nPlease try again later."
+        self.confirmationButton = "😔"
+        self.showingConfirmation = true
       }
     }.resume()
   }

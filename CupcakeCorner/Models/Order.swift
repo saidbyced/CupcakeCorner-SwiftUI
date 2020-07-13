@@ -57,7 +57,10 @@ class Order: ObservableObject, Codable {
   init() {}
   
   var addressNotValid: Bool {
-    name.isEmpty || streetAddress.isEmpty || city.isEmpty || postcode.isEmpty
+    name.isEmpty
+      || streetAddress.isEmpty || streetAddress.replacingOccurrences(of: " ", with: "").isEmpty
+      || city.isEmpty || city.replacingOccurrences(of: " ", with: "").isEmpty
+      || postcode.isEmpty || postcode.replacingOccurrences(of: " ", with: "").isEmpty
   }
   
   // MARK: Price details
