@@ -23,7 +23,7 @@ struct CheckoutView: View {
             .resizable()
             .scaledToFit()
             .frame(width: geometry.size.width)
-          Text("Your total is £\(self.order.cost, specifier: "%.2f")")
+          Text("Your total is £\(self.order.details.cost, specifier: "%.2f")")
             .font(.title)
           Button("Place order") {
             print("Order placed.")
@@ -41,7 +41,7 @@ struct CheckoutView: View {
   
   func placeOrder() {
     
-    guard let encodedOrder = try? JSONEncoder().encode(order) else {
+    guard let encodedOrder = try? JSONEncoder().encode(order.details) else {
       print("Failed to encode order")
       return
     }
@@ -58,9 +58,9 @@ struct CheckoutView: View {
         return
       }
       
-      if let decodedOrder = try? JSONDecoder().decode(Order.self, from: data) {
+      if let decodedOrder = try? JSONDecoder().decode(OrderDetails.self, from: data) {
         self.confirmationTitle = "Thank you!"
-        self.confirmationMessage = "Your order for \(decodedOrder.quantity) x \(Order.types[decodedOrder.type].lowercased()) cupcakes is on its way!"
+        self.confirmationMessage = "Your order for \(decodedOrder.quantity) x \(OrderDetails.types[decodedOrder.type].lowercased()) cupcakes is on its way!"
         self.confirmationButton = "🙂"
         self.showingConfirmation = true
       } else {
